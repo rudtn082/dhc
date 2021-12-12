@@ -1,0 +1,84 @@
+@font-face {
+    font-family: 'NanumSquareB';
+    src: url(../fonts/NanumSquareB.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'NanumSquareR';
+    src: url(../fonts/NanumSquareR.ttf);
+    font-weight: normal;
+    font-style: normal;
+}
+body {
+  font-family: 'NanumSquareR';
+  background: #fff;
+}
+.header {
+ 	padding: 10px;
+	width: 100%;
+	max-width: 960px;
+	height: 50px;
+    text-align: center;
+ 	color: #000;
+    margin: 0 auto;
+}
+.header .title {
+    font-size: 1.5rem;
+ 	font-family: 'NanumSquareB';
+}
+.container {
+    margin-top: 30px;
+	max-width: 960px;
+    width: initial;
+ 	background: #e1e1e1;
+}
+.container .content {
+    width: 100%;
+    background: #fff;
+    margin-bottom: 15px;
+    padding: 20px;
+}
+.container .content .contBox {
+	height: 280px;
+}
+.container .content .contTit {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: bold;
+ 	font-family: 'NanumSquareB';
+ 	margin-bottom: 20px;
+}
+.container .content .contBox table {
+    table-layout: fixed;
+    font-size: 1rem;
+}
+.container .content .contBox table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.container .content .contBox table .sympathy {
+    background: #f5c3c3;
+    padding: 5px 10px;
+    border-radius: 10px;
+    color: #d72828;
+    font-weight: bold;
+ 	font-family: 'NanumSquareB';
+}
+.container .content .contBox table .nonSympathy {
+    background: #c3c5f5;
+    padding: 5px 10px;
+    border-radius: 10px;
+    color: #2b28d7;
+    font-weight: bold;
+ 	font-family: 'NanumSquareB';
+}
+.container .content .contBox table .inquire {
+    background: #d9d3d3;
+    padding: 5px 10px;
+    border-radius: 10px;
+    color: #242624;
+    font-weight: bold;
+ 	font-family: 'NanumSquareB';
+}
