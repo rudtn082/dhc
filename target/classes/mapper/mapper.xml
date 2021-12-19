@@ -1,9 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.kxxxgs.webpro.HomeDao">
-  <select id="testSel" resultType="Hashmap">
-    SELECT  *
-	FROM    T_CATEGORY
-  </select>
+<mapper namespace="com.kxxxgs.dao.HomeDao">
+	  <select id="popularStockAjax" resultType="Hashmap">
+		    SELECT	A.STOCKS_NM
+				  , COUNT(A.STOCKS_NM) AS COUNT
+			FROM
+			(
+			SELECT	SS.STOCKS_ID
+				  , SI.STOCKS_NM
+			FROM	SEARCH_STOCKS SS
+			JOIN	STOCKS_INFO	SI ON SS.STOCKS_ID = SI.STOCKS_ID
+			ORDER BY
+					SS.INPUT_DATETIME DESC
+			LIMIT 100
+			) A
+			GROUP BY A.STOCKS_NM
+			ORDER BY COUNT(A.STOCKS_NM) DESC
+			LIMIT 5
+	  </select>
+	  
+
+	  <select id="searchStockAjax" resultType="Hashmap">
+		    SELECT  STOCKS_ID
+		    	  , STOCKS_NM
+			FROM    STOCKS_INFO
+			WHERE	UPPER(TRIM(STOCKS_NM)) LIKE CONCAT('%',UPPER(TRIM(#{searchText})),'%')
+			OR		UPPER(TRIM(STOCKS_ID)) LIKE CONCAT('%',UPPER(TRIM(#{searchText})),'%')
+			ORDER BY
+					STOCKS_NM
+			LIMIT 	10
+	  </select>
+	  
+	  <delete id="deleteStocksInfo">
+	  		DELETE
+	  		FROM	STOCKS_INFO
+	  </delete>
+	  
+	  <update id="insertStocksInfo">
+	  		INSERT
+	  		INTO	STOCKS_INFO (
+	  				STOCKS_ID
+			 	  , STOCKS_NM
+				  , STOCKS_TYPE
+				  , INPUT_DATETIME
+			) VALUES (
+				  	#{STOCKS_ID}
+				  , #{STOCKS_NM}
+				  , #{STOCKS_TYPE}
+				  , NOW()
+			)
+	  </update>
+	  
+	  <update id="insertSearchStocks">
+	  		INSERT
+	  		INTO	SEARCH_STOCKS (
+	  				STOCKS_ID
+				  , INPUT_DATETIME
+			) VALUES (
+				  	#{STOCKS_ID}
+				  , NOW()
+			)
+	  </update>
 </mapper>

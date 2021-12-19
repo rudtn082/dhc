@@ -11,30 +11,33 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.kxxxgs.webpro">
-		<level value="info" />
+	<logger name="com.kxxxgs.controller">
+		<level value="debug" />
+	</logger>
+	<logger name="com.kxxxgs.batch">
+		<level value="debug" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
 	<logger name="org.springframework.core">
-		<level value="info" />
+		<level value="warn" />
 	</logger>
 	
 	<logger name="org.springframework.beans">
-		<level value="info" />
+		<level value="warn" />
 	</logger>
 	
 	<logger name="org.springframework.context">
-		<level value="info" />
+		<level value="warn" />
 	</logger>
 
 	<logger name="org.springframework.web">
-		<level value="info" />
+		<level value="warn" />
 	</logger>
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="warn" />
+		<priority value="debug" />
 		<appender-ref ref="console" />
 	</root>
 	

@@ -8,11 +8,11 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl" />
-		<property name="username" value="system" />
-		<property name="password" value="1043" />	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/stock" />
+		<property name="username" value="kspark" />
+		<property name="password" value="1043" />
 	</bean>
 	
 	<!-- SqlSession --> 
@@ -25,7 +25,7 @@
 		<!-- SQL 파일의 위치를 지정합니다. -->
 		<property name="mapperLocations" value="classpath*:/resources/mapper/*.xml" />
 	</bean>
-	
+
 	<!-- SqlSession -->
 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache"> 
 	 	<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>

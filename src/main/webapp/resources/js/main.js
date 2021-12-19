@@ -1,24 +1,3 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ page session="false"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
-<head>
-<title>종토방 뷰</title>
-<meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link rel="stylesheet" href="../../resources/css/materialize.css">
-<link rel="stylesheet" href="../../resources/css/highcharts.css">
-<link rel="stylesheet" href="../../resources/css/common.css">
-<script	src="../../resources/js/materialize.min.js"></script>
-<script	src="../../resources/js/d3.min.js"></script>
-<script	src="../../resources/js/highcharts.js"></script>
-<script src="https://rawgit.com/jasondavies/d3-cloud/master/build/d3.layout.cloud.js" type="text/JavaScript"></script>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-
-<script type="text/javascript">
-
 var width = 0;
 var height = 200;
 
@@ -26,33 +5,78 @@ var svg = null;
 var keyword1 = ["상한가", "상한", "상승", "오른", "오른다", "올라", "안티", "매수", "지지"];
 var keyword2 = ["하한가", "하한", "하락", "내린", "내린다", "내려", "찬티", "매도", "탈출"];
 
+
+$(function(){
+	$("#popularStock").empty();
+	$.ajax({
+		type: "GET",
+	    url: "/main/popularStockAjax",
+	    dataType: "json",
+	    data: {},
+	    contentType : "application/json; charset:UTF-8",
+	    async: false,
+	    error : function(request,status,error) {
+
+	    },
+	    success : function(data) {
+	    	var html = '';
+    		var first = "";
+	    	$.each(data.result, function(i, v) {
+	    		if(i == 0) {
+	    			first = v.STOCKS_NM;
+	    		}
+	    		html += '<div class="scroller_item">';
+	    		html += '	<a class="cta-link" href="#">'+v.STOCKS_NM+'</a>';
+	    		html += '</div>';
+	    	});
+    		html += '<div class="scroller_item">';
+    		html += '	<a class="cta-link">'+first+'</a>';
+    		html += '</div>';
+           
+	    	$("#popularStock").append(html);
+
+	    	function step(index) {
+    	        $('#popularStock ol').delay(2000).animate({
+    	            top: -height * index,
+    	        }, 500, function() {
+    	            step((index + 1) % count);
+    	        });
+    	    }
+	    }
+	});
+});
+
 $(window).resize( function() {
 	width = $('.contBox').eq(0).innerWidth();
 
 	$("svg").eq(0).attr("width", width);
-	svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+	if(svg != null) {
+		svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");	
+	}
 });
 
-$(function(){
+// 종목 데이터 로드
+function setStockDate(code) {
+	$(".loading").show();
 	var wordcloudlist = null;
 	var param = {
-			'code' : '064260'
+			'code' : code
 	};
-	
+
 	width = $('.contBox').eq(0).innerWidth();
 	// 폰트크기
-	
 	$.ajax({
 		type: "GET",
 	    url: "/main/scrapAjax",
 	    dataType: "json",
 	    data: param,
-	    contentType: "application/json; charset:UTF-8", 
-	    async: false,
+	    contentType : "application/json; charset:UTF-8",
+	    async: true,
 	    error : function(request,status,error) {
-	        //alert("Error!");
+	    	$(".loading").hide();
 	    },
 	    success : function(data) {
+	    	$("#wordcloud").empty();
 	    	// 게시글 작성 순위
 	    	writerChartGen(data.writerList);
 	    	
@@ -76,6 +100,8 @@ $(function(){
           	setInterval(function(){
 	            showCloud(data.wordCloudList)
 	       	},3500)
+
+	       	$(".loading").hide();
 	    }
 	});
 
@@ -107,7 +133,7 @@ $(function(){
                      return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
                  })
                  .text(function(d) { return d.key; });
-                   
+
            cloud.transition()
                  .duration(600)
                  .style("font-size", function (d) {
@@ -118,7 +144,82 @@ $(function(){
                  });
 	    }
 	}
-	              
+}
+
+// 종목명 검색
+$(document).keyup("#code", function() {
+	if($("#code").val().length > 1) {
+		var searchText = $("#code").val().toUpperCase();
+		var param = {
+				'searchText' : searchText
+		};
+		
+		$.ajax({
+			type: "GET",
+		    url: "/main/searchStockAjax",
+		    dataType: "json",
+		    data: param,
+		    contentType : "application/json; charset:UTF-8",
+		    async: true,
+		    error : function(request,status,error) {
+		    },
+		    success : function(data) {
+		    	$("#codeList").empty();
+		    	var html = '';
+
+		    	if(data.result.length == 0) {
+		    		html += "<li code=''>검색된 종목이 없습니다.</li>";
+		    		$('.codeDiv').hide();
+		    	} else {
+			    	$.each(data.result, function(i, v) {
+			    		var first = v.STOCKS_NM.indexOf(searchText);
+			    		var text1 = v.STOCKS_NM.substr(0, first);
+			    		var text2 = v.STOCKS_NM.substr(first, searchText.length);
+			    		var text3 = v.STOCKS_NM.substr(first+searchText.length);
+
+			    		html += "<li code='"+v.STOCKS_ID+"'>"+v.STOCKS_NM.substr(0, first)+"<span style='color: #fd8000;'>"+text2+"</span>"+text3+"</li>";	
+			    	});
+		    	}
+		    	
+		    	$("#codeList").append(html);
+		    	$("#codeList").show();
+		    }
+		});
+	}
+});
+
+//종목명 클릭
+$(document).on("click", "#codeList li", function() {
+	if($(this).attr("code") != "") {
+		$("#codeNm").text($(this).text());
+		$("#codeId").text("(" + $(this).attr("code") + ")");
+		$("#code").val('');
+		$("#codeList").hide();
+		$(".contentInit").hide();
+		$('.codeDiv').show();
+		$('.content').show();
+		
+
+		var param = {
+				'STOCKS_ID' : $(this).attr("code")
+		};
+		
+		$.ajax({
+			type: "GET",
+		    url: "/main/clickStockAjax",
+		    dataType: "json",
+		    data: param,
+		    contentType : "application/json; charset:UTF-8",
+		    async: true,
+		    error : function(request,status,error) {
+		    },
+		    success : function(data) {
+		    	
+		    }
+		});
+		
+		setStockDate($(this).attr("code"));
+	}
 });
 
 // 게시글 작성 순위
@@ -143,7 +244,7 @@ function writerChartGen(data) {
 	            rotation: -45,
 	            style: {
 	                fontSize: '13px',
-	                fontFamily: 'Verdana, sans-serif'
+	                fontFamily: 'NanumSquareR'
 	            }
 	        }
 	    },
@@ -156,13 +257,8 @@ function writerChartGen(data) {
 	    legend: {
 	        enabled: false
 	    },
-	    plotOptions: {
-	        series: {
-	            label: {
-	                connectorAllowed: false
-	            },
-	            pointStart: 2010
-	        }
+	    tooltip: {
+	        pointFormat: '{point.y:1f}건',
 	    },
 	    series: [{
 	        data: seriesData,
@@ -279,38 +375,3 @@ function inquirePost(data) {
 	
 	$("#inquirePost").append(html);
 }
-</script>
-</head>
-<body>
-	<div class="header">
-		<span class="title">돔황챠</span>
-		<input id="code" type="text" placeholder="도망쳐야할 종목명 입력"/>
-		<span class="">최근 게시글 500개를 요약하였습니다.</span>
-	</div>
-	<div class="container">
-		<div class="content">
-			<span class="contTit">종목 키워드</span>
-			<div class="contBox" id="wordcloud" style="height: 200px;"> </div>
-		</div>
-		<div class="content">
-			<span class="contTit">조회수순 게시글</span>
-			<div class="contBox" id="inquirePost"></div> 
-		</div>
-		<div class="content">
-			<span class="contTit">공감순 게시글</span>
-			<div class="contBox" id="sympathyPost"></div> 
-		</div>
-		<div class="content">
-			<span class="contTit">비공감순 게시글</span>
-			<div class="contBox" id="nonSympathyPost"></div> 
-		</div>
-		<div class="content">
-			<span class="contTit">게시글 작성 순위</span>
-			<div class="contBox" id="writerChart"> </div> 
-		</div>
-		
-		
-		<%-- <%@ include file="song.jsp"%> --%>
-	</div>
-</body>
-</html>

@@ -26,12 +26,46 @@ body {
 .header .title {
     font-size: 1.5rem;
  	font-family: 'NanumSquareB';
+    cursor: pointer;
+    color: #000;
+}
+.header .code {
+    height: 35px;
 }
 .container {
-    margin-top: 30px;
+    margin-top: 40px;
 	max-width: 960px;
     width: initial;
  	background: #e1e1e1;
+}
+.container .codeDiv {
+ 	height: 50px;
+ 	background: #fff;
+    margin-bottom: 15px;
+}
+.container .codeDiv #codeNm {
+    line-height: 50px;
+    font-size: 20px;
+    margin-left: 20px;
+    font-weight: bold;
+ 	font-family: 'NanumSquareB';
+}
+.container .codeDiv #codeId {
+    line-height: 50px;
+    font-size: 12px;
+    margin-left: 3px;
+    font-weight: bold;
+ 	font-family: 'NanumSquareB';
+}
+.container .contentInit {
+    background: #fff;
+}
+.container .contentInit .initInfo {
+    position: absolute;
+    width: 70vw;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 .container .content {
     width: 100%;
@@ -81,4 +115,18 @@ body {
     color: #242624;
     font-weight: bold;
  	font-family: 'NanumSquareB';
+}
+.codeList {
+	background-color: #fff;
+	border: 1px solid #aaa;
+    width: 97%;
+    max-height: 100px;
+    overflow: auto;
+    margin: 0 auto;
+    position: relative;
+    display: none;
+}
+.codeList li {
+	display: block;
+	padding: 10px;
 }

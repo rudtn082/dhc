@@ -24,13 +24,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
 
 import com.kxxxgs.service.HomeService;
 
@@ -38,7 +35,7 @@ import com.kxxxgs.service.HomeService;
  * Handles requests for the application home page.
  */
 @Controller
-@RequestMapping(value = "/")
+@RequestMapping(value = "/main")
 public class HomeController {
 	@Autowired
 	private HomeService service;
@@ -54,12 +51,12 @@ public class HomeController {
 		}
 	}
 
-	@RequestMapping(value = "/main", method = RequestMethod.GET)
+	@RequestMapping(value = "/main.do")
 	public Model main(Locale locale, Model model) throws Exception {
 		Date date = new Date();
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		String formattedDate = dateFormat.format(date);
-		logger.info("[main] 접속시간 : " + formattedDate);
+		logger.debug("[main] 접속시간 : " + formattedDate);
 
 		// 음악검색
 		try {
@@ -73,16 +70,16 @@ public class HomeController {
 		return model;
 	}
 
-	@RequestMapping(value = "/main/scrapAjax", method = RequestMethod.GET)
+	@RequestMapping(value = "/scrapAjax")
 	@ResponseBody
-	public Map<String, List<Entry<String, Integer>>> scrapAjax(HttpServletRequest request, @RequestParam Map<String, Object> paramMap, Model model) throws Exception {
-		Map<String, List<Entry<String, Integer>>> rtnMap = new HashMap();
+	public ModelAndView scrapAjax(HttpServletRequest request, @RequestParam Map<String, Object> paramMap, Model model) throws Exception {
+		ModelAndView mav = new ModelAndView();
 		List<Entry<String, Integer>> wordCloudList = null;
 		List<Entry<String, Integer>> sympathyList = null;
 		List<Entry<String, Integer>> nonSympathyList = null;
 		List<Entry<String, Integer>> inquireList = null;
 		List<Entry<String, Integer>> writerList = null;
-		
+
 		if(paramMap.get("code") != null) {
 			try {
 				Document doc;
@@ -209,12 +206,11 @@ public class HomeController {
 					}	
 				}
 				
-				rtnMap.put("wordCloudList", wordCloudList);
-				rtnMap.put("writerList", writerList);
-				rtnMap.put("inquireList", inquireList);
-				rtnMap.put("nonSympathyList", nonSympathyList);
-				rtnMap.put("sympathyList", sympathyList);
-				//mav.addObject("result", list_entries);
+				mav.addObject("wordCloudList", wordCloudList);
+				mav.addObject("writerList", writerList);
+				mav.addObject("inquireList", inquireList);
+				mav.addObject("nonSympathyList", nonSympathyList);
+				mav.addObject("sympathyList", sympathyList);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -222,7 +218,41 @@ public class HomeController {
 		} else {
 			//mav.addObject("result", null);
 		}
+		mav.setViewName("jsonView");
 		
-		return rtnMap;
+		return mav;
+	}
+	
+	@RequestMapping(value = "/popularStockAjax")
+	@ResponseBody
+	public ModelAndView popularStockAjax(HttpServletRequest request, @RequestParam HashMap<String, Object> paramMap, Model model) throws Exception {
+		ModelAndView mav = new ModelAndView();
+
+		mav.addObject("result", service.popularStockAjax(paramMap));
+		mav.setViewName("jsonView");
+		
+		return mav;
+	}
+
+	@RequestMapping(value = "/searchStockAjax")
+	@ResponseBody
+	public ModelAndView searchStockAjax(HttpServletRequest request, @RequestParam HashMap<String, Object> paramMap, Model model) throws Exception {
+		ModelAndView mav = new ModelAndView();
+
+		mav.addObject("result", service.searchStockAjax(paramMap));
+		mav.setViewName("jsonView");
+		
+		return mav;
+	}
+
+	@RequestMapping(value = "/clickStockAjax")
+	@ResponseBody
+	public ModelAndView clickStockAjax(HttpServletRequest request, @RequestParam HashMap<String, Object> paramMap, Model model) throws Exception {
+		ModelAndView mav = new ModelAndView();
+
+		service.insertSearchStocks(paramMap);
+		mav.setViewName("jsonView");
+		
+		return mav;
 	}
 }

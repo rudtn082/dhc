@@ -4,20 +4,22 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
 	<filter>
-		<filter-name>encodingFilter</filter-name>
-		<filter-class>org.springframework.web.filter.CharacterEncodingFilter
-		</filter-class>
-		<init-param>
-			<param-name>encoding</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
+	    <filter-name>encoding-filter</filter-name>
+	    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+	    <init-param>
+	        <param-name>encoding</param-name>
+	        <param-value>utf-8</param-value>
+	
+	    </init-param>
+	    <init-param>
+	        <param-name>forceEncoding</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
 	</filter>
-
 	<filter-mapping>
-		<filter-name>encodingFilter</filter-name>
-		<url-pattern>/*</url-pattern>
+	    <filter-name>encoding-filter</filter-name>
+	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
-
 
 	<!-- Creates the Spring Container shared by all Servlets and Filters -->
 	<listener>
@@ -49,7 +51,7 @@
 	</context-param>
 
 	<welcome-file-list>
-	  <welcome-file>main.jsp</welcome-file>
+	  <welcome-file>/WEB-INF/index.jsp</welcome-file>
 	</welcome-file-list>
 
 </web-app>
