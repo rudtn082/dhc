@@ -2,19 +2,20 @@
 <link rel="stylesheet" href="../../../resources/css/textScrolling.css">
 <script	src="../../../resources/js/main.js"></script>
 
-<div class="codeDiv" style="display: none;">
-	<span id="codeNm"></span>
-	<span id="codeId"></span>
-</div>
 <div class="contentInit">
 	<div class="initInfo">
 	    <div class='masthead-image' id='scroller-container'>
-	        <div class='content center'>
+	        <div class='center'>
 	            <h1 id='scroller'>
 	              <div>실시간 인기 검색 종목</div>
 	              <div id="popularStock" class="popularStock"></div>
 	            </h1>
 	        </div>
+	    </div>
+	    <div class="codeSearchDiv">
+	    	<i class="material-icons codeSearchIcon">search</i>
+	    	<input class="code" id="code" type="text"/>
+			<ul id="codeList" class="codeList"></ul>
 	    </div>
 	</div>
 </div>

@@ -6,6 +6,7 @@
   background: #16171d;
   opacity: 0.9;
   position: fixed;
+  z-index: 999;
 }
 
 .loading > div {

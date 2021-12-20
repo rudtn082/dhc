@@ -10,14 +10,6 @@
   #scroller {
       text-rendering: optimizeLegibility
   }
-
-  #scroller-container .content {
-      height: auto;
-      margin-left: inherit;
-      margin-right: inherit
-  }
-
-
   #popularStock {
       height: 35px;
       margin-bottom: -6px;
