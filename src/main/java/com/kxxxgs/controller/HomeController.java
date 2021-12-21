@@ -42,10 +42,10 @@ public class HomeController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-	@RequestMapping(value = "/favicon.ico")
-	public void favicon(HttpServletRequest request, HttpServletResponse reponse) throws Exception {
+	@RequestMapping(value = "/logoAjax")
+	public void logoAjax(HttpServletRequest request, HttpServletResponse reponse) throws Exception {
 		try {
-			reponse.sendRedirect("/resources/music-notes.ico");
+			reponse.sendRedirect("../../resources/assets/logo.png");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
